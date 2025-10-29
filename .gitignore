@@ -1,2 +1,10 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
 config.json
 credentials.json
+__pycache__/
+bin/
+include/
+lib64/
+lib*/
+agenda_debug.json
+pyvenv.cfg

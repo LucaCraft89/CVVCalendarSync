@@ -1,1 +1,3 @@
-0 */1 * * * /usr/local/bin/python3 /app/classevivaSync.py >> /var/log/classeviva.log 2>&1
+# Run sync every hour and output to stdout/stderr for Docker logging
+0 */1 * * * /usr/local/bin/python3 /app/classevivaSync.py > /proc/1/fd/1 2>&1
+# Empty line required at end of cron file

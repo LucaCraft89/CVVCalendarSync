@@ -5,9 +5,21 @@ services:
       dockerfile: Dockerfile
     container_name: classeviva_sync
     volumes:
-      - ./config.json:/app/config.json  # Mount your config file
-      - ./credentials.json:/app/credentials.json  # Mount your credentials file
-      - ./logs:/var/log  # Optional: Store logs on the host machine
+      - ./config.json:/app/config.json:ro # Mount config file as read-only
+      - ./credentials.json:/app/credentials.json:ro # Mount credentials as read-only
     environment:
-      - TZ=Europe/Rome  # Set timezone if necessary
-    restart: always  # Automatically restart the container if it stops
+      - TZ=Europe/Rome # Set timezone
+      - PYTHONUNBUFFERED=1 # Force Python to run in unbuffered mode for better logging
+    restart: unless-stopped # Restart unless explicitly stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" # Maximum size of log file before rotation
+        max-file: "3" # Keep up to 3 rotated log files
+        labels: "classeviva_sync"
+    healthcheck:
+      test: ["CMD", "python3", "/app/healthcheck.py"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
