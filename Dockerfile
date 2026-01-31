@@ -28,12 +28,14 @@ RUN chmod 0644 /etc/cron.d/classeviva-cron && \
 # Apply the cron job to the crontab
 RUN crontab /etc/cron.d/classeviva-cron
 
-# Create log directory
-RUN mkdir -p /var/log/classeviva
+# Create log directory and state directory
+RUN mkdir -p /var/log/classeviva && \
+    touch /app/sync_state.json && \
+    chmod 666 /app/sync_state.json
 
 # Health check
 HEALTHCHECK --interval=5m --timeout=10s --start-period=30s --retries=3 \
     CMD python3 /app/healthcheck.py || exit 1
 
-# Run initial sync on container start, then start cron
+# Run initial sync on container start, then start cron in foreground
 CMD python3 /app/classevivaSync.py && cron -f
